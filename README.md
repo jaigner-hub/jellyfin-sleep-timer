@@ -6,7 +6,14 @@ A tiny Jellyfin 10.11+ plugin that pauses your active playback after a chosen du
 
 The existing community plugin (Jellysleep) requires the JavaScript Injector + File Transformation plugins, which break HLS playback on our Jellyfin 10.11.8 + Raspberry Pi 5 setup. This plugin avoids them entirely: the timer logic is a regular Jellyfin plugin controller, and the optional in-player button ships as either a Tampermonkey/Violentmonkey userscript (no server-side changes) or a static JS file dropped into the web client's directory — no response middleware on the request path, so HLS streams are never touched.
 
-## Build
+## Install (prebuilt — no .NET SDK needed)
+
+1. Grab `SleepTimer_v1.0.0.zip` from the [latest release](https://github.com/jaigner-hub/jellyfin-sleep-timer/releases/latest).
+2. On your Jellyfin host, unzip into `/var/lib/jellyfin/plugins/SleepTimer_1.0.0.0/` (create the dir if needed).
+3. `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/SleepTimer_1.0.0.0` and restart Jellyfin.
+4. Install the OSD button (see [In-player button](#in-player-button-recommended) below) or use the bookmarklets.
+
+## Build from source
 
 Requires .NET 9 SDK (Jellyfin 10.11.x ships on net9.0).
 
@@ -16,7 +23,7 @@ dotnet publish src -c Release -o out
 
 Output: `out/Jellyfin.Plugin.SleepTimer.dll`.
 
-## Deploy
+## Deploy (rasp)
 
 `scripts/deploy.sh` builds, scp's to the configured Jellyfin host (`rasp`), and restarts the service. Edit the host name if yours differs.
 
@@ -27,6 +34,14 @@ Output: `out/Jellyfin.Plugin.SleepTimer.dll`.
 It expects:
 - An `ssh rasp` config that connects to the Jellyfin host as a user with passwordless sudo.
 - The Jellyfin server data dir at `/var/lib/jellyfin/plugins/`.
+
+## Cutting a new release
+
+```bash
+git tag v1.1.0 && git push origin v1.1.0
+```
+
+GitHub Actions (`.github/workflows/release.yml`) builds the DLL, packages it with `meta.json`, and attaches the zip to a new GitHub release.
 
 ## In-player button (recommended)
 

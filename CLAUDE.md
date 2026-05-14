@@ -26,6 +26,18 @@ Server-side Jellyfin 10.11+ plugin that pauses your active playback sessions aft
 
 The userscript path (`sleep-timer.user.js` at repo root) bypasses `install-web.sh` entirely — users install it client-side via Tampermonkey/Violentmonkey and updates flow from the GitHub raw URL. The server-side install is still useful for headless/non-browser clients (e.g., devices that always load whatever the server serves) and is the only path that affects users who can't install browser extensions.
 
+## Releases
+
+`.github/workflows/release.yml` triggers on `v*` tag push. It runs `dotnet publish`, generates a per-release `meta.json` from the repo-root template (substitutes version + timestamp via `jq`), zips `Jellyfin.Plugin.SleepTimer.dll` + `meta.json` as `SleepTimer_<tag>.zip`, and attaches the zip to a new GitHub release with install instructions and an md5 checksum.
+
+Cut a release with:
+
+```bash
+git tag v1.1.0 && git push origin v1.1.0
+```
+
+The repo's `meta.json` is the template — the workflow only overwrites `version` and `timestamp`. Bump other fields (description, owner, targetAbi) in the file directly when they need to change.
+
 ## Layout
 
 - `src/` — C# plugin (.NET 9, `Jellyfin.Controller 10.11.*` PackageReference)

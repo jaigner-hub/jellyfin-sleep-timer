@@ -1,0 +1,11 @@
+{
+    "category": "General",
+    "guid": "25eb5d6f-c155-4c2c-8f71-5baeb18f7bde",
+    "name": "Sleep Timer",
+    "description": "Pauses your active playback sessions after a chosen duration (1, 15, 30, 60, or 120 minutes). Reaches the UI via a Tampermonkey/Violentmonkey userscript or an optional static-file edit of jellyfin-web - no JS Injector / File Transformation dependency, so HLS playback is untouched.",
+    "overview": "Sleep timer that pauses all your active sessions after N minutes.",
+    "owner": "jaigner-hub",
+    "version": "1.0.0.0",
+    "targetAbi": "10.11.0.0",
+    "timestamp": "2026-05-14T00:00:00Z"
+}

@@ -1,0 +1,75 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Determine version
+        id: ver
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG#v}"
+          # Pad to 4-component assembly version: 1.0.0 -> 1.0.0.0
+          ASM="$VERSION"
+          dots=$(echo "$ASM" | tr -cd . | wc -c)
+          while [ "$dots" -lt 3 ]; do ASM="$ASM.0"; dots=$((dots+1)); done
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "asm=$ASM" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        run: |
+          dotnet publish src -c Release -o out \
+            -p:Version=${{ steps.ver.outputs.version }} \
+            -p:AssemblyVersion=${{ steps.ver.outputs.asm }} \
+            -p:FileVersion=${{ steps.ver.outputs.asm }}
+
+      - name: Stage release directory
+        run: |
+          mkdir -p stage
+          cp out/Jellyfin.Plugin.SleepTimer.dll stage/
+          TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          jq --arg v "${{ steps.ver.outputs.asm }}" --arg ts "$TS" \
+             '.version = $v | .timestamp = $ts' meta.json > stage/meta.json
+
+      - name: Create zip
+        id: zip
+        run: |
+          NAME="SleepTimer_${{ steps.ver.outputs.tag }}.zip"
+          (cd stage && zip "../$NAME" Jellyfin.Plugin.SleepTimer.dll meta.json)
+          MD5=$(md5sum "$NAME" | awk '{print $1}')
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "md5=$MD5" >> "$GITHUB_OUTPUT"
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.zip.outputs.name }}
+          generate_release_notes: true
+          body: |
+            ## Install (server-side plugin)
+
+            1. Download `${{ steps.zip.outputs.name }}` below.
+            2. Unzip into `/var/lib/jellyfin/plugins/SleepTimer_${{ steps.ver.outputs.asm }}/` on your Jellyfin host (create the dir if needed; `chown jellyfin:jellyfin` after copying).
+            3. Restart Jellyfin (`sudo systemctl restart jellyfin` on Linux).
+
+            ## Install (in-player OSD button)
+
+            See the [README](https://github.com/jaigner-hub/jellyfin-sleep-timer#in-player-button-recommended) - userscript or server-side static-file patch.
+
+            ---
+
+            Checksum (md5): `${{ steps.zip.outputs.md5 }}`

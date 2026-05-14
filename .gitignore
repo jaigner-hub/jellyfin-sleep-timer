@@ -1,6 +1,8 @@
 bin/
 obj/
 out/
+stage/
+*.zip
 *.user
 .vs/
 .vscode/
