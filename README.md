@@ -4,7 +4,7 @@ A tiny Jellyfin 10.11+ plugin that pauses your active playback after a chosen du
 
 ## Why
 
-The existing community plugin (Jellysleep) requires the JavaScript Injector + File Transformation plugins, which break HLS playback on our Jellyfin 10.11.8 + Raspberry Pi 5 setup. This plugin avoids them entirely: the timer logic is server-side, and the optional in-player button is a static JS file dropped into the web client's directory — no response middleware on the request path, so HLS streams are never touched.
+The existing community plugin (Jellysleep) requires the JavaScript Injector + File Transformation plugins, which break HLS playback on our Jellyfin 10.11.8 + Raspberry Pi 5 setup. This plugin avoids them entirely: the timer logic is a regular Jellyfin plugin controller, and the optional in-player button ships as either a Tampermonkey/Violentmonkey userscript (no server-side changes) or a static JS file dropped into the web client's directory — no response middleware on the request path, so HLS streams are never touched.
 
 ## Build
 
@@ -40,9 +40,13 @@ Two install options:
 
 Recommended if you mainly use Jellyfin in a browser and would rather not touch the server's web directory.
 
-1. Install [Tampermonkey](https://www.tampermonkey.net/) (Chrome, Firefox, Edge, Safari) or [Violentmonkey](https://violentmonkey.github.io/).
-2. Open the raw script URL: <https://raw.githubusercontent.com/jaigner-hub/jellyfin-sleep-timer/main/sleep-timer.user.js>
-3. Your userscript manager will prompt to install — accept.
+**👉 [Install sleep-timer.user.js](https://raw.githubusercontent.com/jaigner-hub/jellyfin-sleep-timer/main/sleep-timer.user.js)**
+
+With a userscript manager installed, clicking that link opens the install prompt directly.
+
+1. Install [Tampermonkey](https://www.tampermonkey.net/) (Chrome, Firefox, Edge, Safari) or [Violentmonkey](https://violentmonkey.github.io/) first.
+2. Click the install link above.
+3. Your userscript manager prompts to install — accept.
 4. Reload your Jellyfin tab; the bedtime icon appears in the video OSD.
 
 The script's `@match *://*/web/*` makes it run on any Jellyfin web client URL. Updates are pulled from the same raw URL automatically by Tampermonkey/Violentmonkey.
@@ -63,9 +67,13 @@ The installer:
 
 **After `apt upgrade jellyfin-web` on rasp the patch is overwritten** — re-run `./scripts/install-web.sh` to re-apply it. The plugin itself in `/var/lib/jellyfin/plugins/` is unaffected by web client upgrades.
 
-## Bookmarklet (alternative)
+## Bookmarklet (fallback)
 
-If you'd rather not patch the server's web directory, see `INSTRUCTIONS.md` for browser bookmarklets ("Sleep Timer" and "Cancel Sleep Timer") that call the same endpoints from a Jellyfin tab. Useful as a fallback if the in-player button stops working after a future jellyfin-web update.
+`INSTRUCTIONS.md` documents two browser bookmarklets ("Sleep Timer" and "Cancel Sleep Timer") that call the same endpoints from a Jellyfin tab. Useful for:
+
+- JMP (no userscript engine, OSD button doesn't render — paste the bookmarklet into DevTools to trigger a timer).
+- Any browser where you can't or don't want to install Tampermonkey.
+- Fallback if a future `jellyfin-web` update breaks the in-player button.
 
 ## API
 

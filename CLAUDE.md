@@ -7,8 +7,9 @@ Server-side Jellyfin 10.11+ plugin that pauses your active playback sessions aft
 - Host: `rasp` (SSH alias, sudo NOPASSWD; resolves to 10.0.0.154 on LAN). Pi 5 + Jellyfin 10.11.8 via apt.
 - Plugin dir: `/var/lib/jellyfin/plugins/SleepTimer_1.0.0.0/`
 - Web dir: `/usr/share/jellyfin/web/`
-- Backup of original index.html: `/usr/share/jellyfin/web/index.html.sleep-timer-orig`
 - Client: JMP on Windows. JMP ≥ 1.11.0 loads jellyfin-web from the server.
+
+**Current installed state (as of 2026-05-14):** plugin DLL is deployed; the server-side button patch was **unpatched** in favor of the Tampermonkey/Violentmonkey userscript path. The original-index backup is still present at `/usr/share/jellyfin/web/index.html.sleep-timer-orig` but no longer referenced by anything live. Re-apply via `./scripts/install-web.sh` if you ever need the server-side path back.
 
 ## Build & deploy
 
@@ -43,7 +44,7 @@ The userscript path (`sleep-timer.user.js` at repo root) bypasses `install-web.s
 ## Hard constraints
 
 - **No JS Injector / File Transformation plugin dependency.** Those break HLS. This is the existence reason for this project.
-- The in-player button is a **static file edit** of `/usr/share/jellyfin/web/index.html` (adds `<script src="sleep-timer.js"></script>` before `</body>`) plus a JS file dropped into the same directory. **Not** a response-middleware injection.
+- **No response-middleware injection.** The OSD button reaches the client by one of two non-middleware paths: (a) a Tampermonkey/Violentmonkey userscript installed client-side, or (b) a static file edit of `/usr/share/jellyfin/web/index.html` (adds `<script src="sleep-timer.js"></script>` before `</body>`) plus a JS file dropped into the same directory. Both keep response bodies untouched on the request path.
 - Authentication everywhere uses `Authorization: MediaBrowser Token="${ApiClient.accessToken()}"`. The JS reuses the page's `ApiClient` — no separate login.
 - User identification: in the controller, `User.FindFirst("Jellyfin-UserId")?.Value` falls back to `ClaimTypes.NameIdentifier`. `Jellyfin.Extensions.GetUserId()` does **not** exist in 10.11.8.
 - Timers are in-memory only — Jellyfin restart wipes them by design.
