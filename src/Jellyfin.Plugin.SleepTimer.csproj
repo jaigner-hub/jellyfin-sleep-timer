@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Jellyfin.Plugin.SleepTimer</RootNamespace>
+    <AssemblyName>Jellyfin.Plugin.SleepTimer</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.0</Version>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- DLLs copied from rasp (Jellyfin 10.11.8 / net9.0); suppress version-conflict
+         warnings that arise when building this net8.0 project against net9.0 refs. -->
+    <NoWarn>$(NoWarn);MSB3277</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MediaBrowser.Controller">
+      <HintPath>../refs/MediaBrowser.Controller.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Common">
+      <HintPath>../refs/MediaBrowser.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MediaBrowser.Model">
+      <HintPath>../refs/MediaBrowser.Model.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
