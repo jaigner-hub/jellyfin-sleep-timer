@@ -1,10 +1,10 @@
 # Jellyfin Sleep Timer
 
-A tiny Jellyfin 10.11+ plugin that pauses your active playback after a chosen duration. Trigger via a browser bookmarklet — no in-player UI, no JS injection.
+A tiny Jellyfin 10.11+ plugin that pauses your active playback after a chosen duration. Two triggers: an in-player OSD button (recommended) and a browser bookmarklet (alternative). Works in browser tabs and in Jellyfin Media Player.
 
 ## Why
 
-The existing community plugin (Jellysleep) requires the JavaScript Injector + File Transformation plugins, which break HLS playback on our Jellyfin 10.11.8 + Raspberry Pi 5 setup. This plugin is purely server-side; the only client-side bit is a bookmarklet you paste into a browser bookmark.
+The existing community plugin (Jellysleep) requires the JavaScript Injector + File Transformation plugins, which break HLS playback on our Jellyfin 10.11.8 + Raspberry Pi 5 setup. This plugin avoids them entirely: the timer logic is server-side, and the optional in-player button is a static JS file dropped into the web client's directory — no response middleware on the request path, so HLS streams are never touched.
 
 ## Build
 
@@ -28,11 +28,7 @@ It expects:
 - An `ssh rasp` config that connects to the Jellyfin host as a user with passwordless sudo.
 - The Jellyfin server data dir at `/var/lib/jellyfin/plugins/`.
 
-## Install the bookmarklet
-
-See `INSTRUCTIONS.md` for step-by-step instructions on creating the two browser bookmarklets ("Sleep Timer" and "Cancel Sleep Timer").
-
-## Optional: in-player button
+## In-player button (recommended)
 
 Run `./scripts/install-web.sh` (or `./scripts/deploy.sh`, which calls it after deploying the plugin) to add a sleep timer button (bedtime icon) directly in the Jellyfin video player OSD. The button opens a small menu (Off / 1 / 15 / 30 / 60 / 120 min) and shows a `MM:SS` countdown badge while a timer is active. Works in browser tabs and in JMP (≥ 1.11.0, which loads the web client from the server).
 
@@ -41,6 +37,10 @@ The installer:
 - Patches `/usr/share/jellyfin/web/index.html` to load the script (idempotent; backs up the original on first run as `index.html.sleep-timer-orig`).
 
 **After `apt upgrade jellyfin-web` on rasp the patch is overwritten** — re-run `./scripts/install-web.sh` to re-apply it. The plugin itself in `/var/lib/jellyfin/plugins/` is unaffected by web client upgrades.
+
+## Bookmarklet (alternative)
+
+If you'd rather not patch the server's web directory, see `INSTRUCTIONS.md` for browser bookmarklets ("Sleep Timer" and "Cancel Sleep Timer") that call the same endpoints from a Jellyfin tab. Useful as a fallback if the in-player button stops working after a future jellyfin-web update.
 
 ## API
 
@@ -61,4 +61,5 @@ All require `Authorization: MediaBrowser Token="<token>"`.
 
 ## Design
 
-See `docs/superpowers/specs/2026-05-13-jellyfin-sleep-timer-plugin-design.md`.
+- Plugin: `docs/superpowers/specs/2026-05-13-jellyfin-sleep-timer-plugin-design.md`
+- In-player button: `docs/superpowers/specs/2026-05-14-jellyfin-sleep-timer-osd-button-design.md`
