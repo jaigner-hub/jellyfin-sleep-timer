@@ -32,6 +32,16 @@ It expects:
 
 See `INSTRUCTIONS.md` for step-by-step instructions on creating the two browser bookmarklets ("Sleep Timer" and "Cancel Sleep Timer").
 
+## Optional: in-player button
+
+Run `./scripts/install-web.sh` (or `./scripts/deploy.sh`, which calls it after deploying the plugin) to add a sleep timer button (bedtime icon) directly in the Jellyfin video player OSD. The button opens a small menu (Off / 1 / 15 / 30 / 60 / 120 min) and shows a `MM:SS` countdown badge while a timer is active. Works in browser tabs and in JMP (≥ 1.11.0, which loads the web client from the server).
+
+The installer:
+- Copies `web/sleep-timer.js` to `/usr/share/jellyfin/web/`.
+- Patches `/usr/share/jellyfin/web/index.html` to load the script (idempotent; backs up the original on first run as `index.html.sleep-timer-orig`).
+
+**After `apt upgrade jellyfin-web` on rasp the patch is overwritten** — re-run `./scripts/install-web.sh` to re-apply it. The plugin itself in `/var/lib/jellyfin/plugins/` is unaffected by web client upgrades.
+
 ## API
 
 All require `Authorization: MediaBrowser Token="<token>"`.
