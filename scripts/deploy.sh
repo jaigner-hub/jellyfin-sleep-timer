@@ -17,3 +17,6 @@ ssh rasp 'sleep 6; systemctl is-active jellyfin'
 
 echo "==> recent plugin-related log lines"
 ssh rasp 'sudo journalctl -u jellyfin -n 60 --no-pager | grep -iE "sleeptimer|loaded plugin|error|warn" | tail -25 || true'
+
+echo "==> Installing in-player button..."
+"$(dirname "$(readlink -f "$0")")/install-web.sh"
