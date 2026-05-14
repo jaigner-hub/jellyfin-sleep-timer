@@ -1,6 +1,6 @@
 # Jellyfin Sleep Timer
 
-A tiny Jellyfin 10.11+ plugin that pauses your active playback after a chosen duration. Two triggers: an in-player OSD button (recommended) and a browser bookmarklet (alternative). Works in browser tabs and in Jellyfin Media Player.
+A tiny Jellyfin 10.11+ plugin that pauses your active playback after a chosen duration. Two triggers: an in-player OSD button (recommended; browser tabs only — JMP support not currently working) and a browser bookmarklet (alternative; works everywhere including JMP via DevTools).
 
 ## Why
 
@@ -30,7 +30,9 @@ It expects:
 
 ## In-player button (recommended)
 
-Run `./scripts/install-web.sh` (or `./scripts/deploy.sh`, which calls it after deploying the plugin) to add a sleep timer button (bedtime icon) directly in the Jellyfin video player OSD. The button opens a small menu (Off / 1 / 15 / 30 / 60 / 120 min) and shows a `MM:SS` countdown badge while a timer is active. Works in browser tabs and in JMP (≥ 1.11.0, which loads the web client from the server).
+Run `./scripts/install-web.sh` (or `./scripts/deploy.sh`, which calls it after deploying the plugin) to add a sleep timer button (bedtime icon) directly in the Jellyfin video player OSD. The button opens a small menu (Off / 1 / 15 / 30 / 60 / 120 min) and shows a `MM:SS` countdown badge while a timer is active.
+
+**Status:** works in browser tabs. JMP currently does **not** show the button despite loading the web client from the server (cause not yet diagnosed). Use the bookmarklet for JMP in the meantime.
 
 The installer:
 - Copies `web/sleep-timer.js` to `/usr/share/jellyfin/web/`.
