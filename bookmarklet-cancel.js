@@ -1,0 +1,1 @@
+javascript:(()=>{fetch(ApiClient.serverAddress()+'/SleepTimer/Cancel',{method:'POST',headers:{Authorization:`MediaBrowser Token="${ApiClient.accessToken()}"`}}).then(r=>r.ok?alert('Sleep timer canceled.'):alert('Cancel failed: '+r.status)).catch(e=>alert('Failed: '+e));})();
