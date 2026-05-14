@@ -2,6 +2,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# Ensure ~/.dotnet (where the .NET 9 SDK lives) is on PATH for non-interactive runs.
+export PATH="$HOME/.dotnet:$PATH"
+
 echo "==> dotnet publish"
 dotnet publish src -c Release -o out
 
