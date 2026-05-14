@@ -1,6 +1,6 @@
 # Jellyfin Sleep Timer
 
-A tiny Jellyfin 10.11+ plugin that pauses your active playback after a chosen duration. Two triggers: an in-player OSD button (recommended; browser tabs only — JMP support not currently working) and a browser bookmarklet (alternative; works everywhere including JMP via DevTools).
+A tiny Jellyfin 10.11+ plugin that pauses your active playback after a chosen duration. Trigger it from an in-player OSD button (recommended in browsers, installed as a userscript or as a server-side static-file patch) or from a browser bookmarklet (works everywhere including JMP via DevTools).
 
 ## Why
 
@@ -30,9 +30,32 @@ It expects:
 
 ## In-player button (recommended)
 
-Run `./scripts/install-web.sh` (or `./scripts/deploy.sh`, which calls it after deploying the plugin) to add a sleep timer button (bedtime icon) directly in the Jellyfin video player OSD. The button opens a small menu (Off / 1 / 15 / 30 / 60 / 120 min) and shows a `MM:SS` countdown badge while a timer is active.
+Adds a sleep timer button (bedtime icon) directly in the Jellyfin video player OSD. The button opens a small menu (Off / 1 / 15 / 30 / 60 / 120 min) and shows a `MM:SS` countdown badge while a timer is active.
 
 **Status:** works in browser tabs. JMP currently does **not** show the button despite loading the web client from the server (cause not yet diagnosed). Use the bookmarklet for JMP in the meantime.
+
+Two install options:
+
+### Option A: Userscript (no server changes)
+
+Recommended if you mainly use Jellyfin in a browser and would rather not touch the server's web directory.
+
+1. Install [Tampermonkey](https://www.tampermonkey.net/) (Chrome, Firefox, Edge, Safari) or [Violentmonkey](https://violentmonkey.github.io/).
+2. Open the raw script URL: <https://raw.githubusercontent.com/jaigner-hub/jellyfin-sleep-timer/main/sleep-timer.user.js>
+3. Your userscript manager will prompt to install — accept.
+4. Reload your Jellyfin tab; the bedtime icon appears in the video OSD.
+
+The script's `@match *://*/web/*` makes it run on any Jellyfin web client URL. Updates are pulled from the same raw URL automatically by Tampermonkey/Violentmonkey.
+
+### Option B: Server-side static-file patch (alternative)
+
+Patches the server's `/usr/share/jellyfin/web/index.html` to load the script for every client (including headless/non-browser clients that load the server's web bundle). Requires SSH access to the Jellyfin host.
+
+```bash
+./scripts/install-web.sh
+```
+
+(`./scripts/deploy.sh` also calls this after deploying the plugin.)
 
 The installer:
 - Copies `web/sleep-timer.js` to `/usr/share/jellyfin/web/`.

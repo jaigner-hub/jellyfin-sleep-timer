@@ -23,6 +23,8 @@ Server-side Jellyfin 10.11+ plugin that pauses your active playback sessions aft
 
 `install-web.sh` is idempotent — running it twice is a no-op for `index.html`; the JS file is overwritten on each run (which is the update path).
 
+The userscript path (`sleep-timer.user.js` at repo root) bypasses `install-web.sh` entirely — users install it client-side via Tampermonkey/Violentmonkey and updates flow from the GitHub raw URL. The server-side install is still useful for headless/non-browser clients (e.g., devices that always load whatever the server serves) and is the only path that affects users who can't install browser extensions.
+
 ## Layout
 
 - `src/` — C# plugin (.NET 9, `Jellyfin.Controller 10.11.*` PackageReference)
@@ -31,8 +33,9 @@ Server-side Jellyfin 10.11+ plugin that pauses your active playback sessions aft
   - `Controllers/SleepTimerController.cs` — `/SleepTimer/{Set,Cancel,Status}` endpoints
   - `Services/SleepTimerService.cs` — `ConcurrentDictionary<Guid, TimerEntry>` + cancellable `Task.Delay`
   - `PluginServiceRegistrator.cs` — DI registration
-- `web/sleep-timer.js` — vanilla JS, dropped into `/usr/share/jellyfin/web/`. MutationObserver watches for `.videoOsdBottom`; injects a `bedtime`-icon button into `.buttons div[dir="ltr"]`.
-- `scripts/{deploy.sh,install-web.sh}` — deployment automation.
+- `web/sleep-timer.js` — vanilla JS, dropped into `/usr/share/jellyfin/web/` by the server-side install path. MutationObserver watches for `.videoOsdBottom`; injects a `bedtime`-icon button into `.buttons div[dir="ltr"]`.
+- `sleep-timer.user.js` — userscript variant at repo root: same IIFE body as `web/sleep-timer.js` plus a Tampermonkey/Violentmonkey metadata block (`@match *://*/web/*`, `@downloadURL`/`@updateURL` pointing at GitHub raw). Install path for browser users who don't want to patch the server. **Two-source duplication** — keep the bodies in sync when editing.
+- `scripts/{deploy.sh,install-web.sh}` — deployment automation for the server-side path.
 - `bookmarklet*.js` + `INSTRUCTIONS.md` — fallback browser-bookmark UX.
 - `docs/superpowers/specs/` — design specs (plugin + OSD button).
 - `docs/superpowers/plans/` — implementation plans.
