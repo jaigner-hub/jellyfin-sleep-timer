@@ -5,7 +5,7 @@ Server-side Jellyfin 10.11+ plugin that pauses your active playback sessions aft
 ## Deployment target
 
 - Host: `rasp` (SSH alias, sudo NOPASSWD; resolves to 10.0.0.154 on LAN). Pi 5 + Jellyfin 10.11.8 via apt.
-- Plugin dir: `/var/lib/jellyfin/plugins/SleepTimer_1.0.0.0/`
+- Plugin dir: `/var/lib/jellyfin/plugins/SleepTimer_1.1.0.0/`
 - Web dir: `/usr/share/jellyfin/web/`
 - Client: JMP on Windows. JMP ≥ 1.11.0 loads jellyfin-web from the server.
 
@@ -20,7 +20,7 @@ Server-side Jellyfin 10.11+ plugin that pauses your active playback sessions aft
 ./scripts/install-web.sh     # button only (re-run after apt upgrade jellyfin-web)
 ```
 
-`deploy.sh` builds with `dotnet publish src -c Release -o out`, scp's the DLL to `rasp:/var/lib/jellyfin/plugins/SleepTimer_1.0.0.0/`, restarts the jellyfin service, then calls `install-web.sh`.
+`deploy.sh` builds with `dotnet publish src -c Release -o out`, scp's the DLL to `rasp:/var/lib/jellyfin/plugins/SleepTimer_1.1.0.0/`, restarts the jellyfin service, then calls `install-web.sh`.
 
 `install-web.sh` is idempotent — running it twice is a no-op for `index.html`; the JS file is overwritten on each run (which is the update path).
 

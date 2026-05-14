@@ -8,9 +8,9 @@ The existing community plugin (Jellysleep) requires the JavaScript Injector + Fi
 
 ## Install (prebuilt — no .NET SDK needed)
 
-1. Grab `SleepTimer_v1.0.0.zip` from the [latest release](https://github.com/jaigner-hub/jellyfin-sleep-timer/releases/latest).
-2. On your Jellyfin host, unzip into `/var/lib/jellyfin/plugins/SleepTimer_1.0.0.0/` (create the dir if needed).
-3. `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/SleepTimer_1.0.0.0` and restart Jellyfin.
+1. Grab `SleepTimer_v1.1.0.zip` from the [latest release](https://github.com/jaigner-hub/jellyfin-sleep-timer/releases/latest).
+2. On your Jellyfin host, unzip into `/var/lib/jellyfin/plugins/SleepTimer_1.1.0.0/` (create the dir if needed).
+3. `sudo chown -R jellyfin:jellyfin /var/lib/jellyfin/plugins/SleepTimer_1.1.0.0` and restart Jellyfin.
 4. Install the OSD button (see [In-player button](#in-player-button-recommended) below) or use the bookmarklets.
 
 ## Build from source
