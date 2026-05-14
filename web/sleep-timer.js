@@ -57,8 +57,9 @@
             if (!badge) {
                 badge = document.createElement('span');
                 badge.className = 'sleepBadge';
-                badge.style.cssText = 'position:absolute;bottom:-2px;right:-2px;background:#00a4dc;color:#fff;font-size:0.6em;padding:1px 4px;border-radius:8px;line-height:1;pointer-events:none;';
+                badge.style.cssText = 'position:absolute;bottom:-6px;right:-6px;background:#00a4dc;color:#fff;font-size:10px;font-weight:bold;padding:1px 4px;border-radius:8px;line-height:1;pointer-events:none;z-index:10;white-space:nowrap;';
                 btn.style.position = 'relative';
+                btn.style.overflow = 'visible';
                 btn.appendChild(badge);
             }
             badge.textContent = formatRemaining(endsAtMs - Date.now());
